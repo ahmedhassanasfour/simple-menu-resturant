@@ -1,0 +1,251 @@
+/* ضبط عام */
+* {
+  box-sizing: border-box; /* بيخلي الـ padding ميبوظش العرض */
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --brand-blue: #002d91;
+  --brand-yellow: #ffb91d;
+  --brand-dark: #001a57;
+  --light-bg: #fffbf2;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  background-color: var(--light-bg);
+  direction: rtl;
+  line-height: 1.6;
+}
+
+.header {
+  position: relative; /* ضروري لضبط الطبقات */
+  width: 100%;
+  padding: 20px 0;
+  background-color: var(--brand-blue); /* لون أساسي خلف الصورة الباهتة */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 5px solid var(--brand-yellow);
+  overflow: hidden; /* عشان الصورة الزيادة متخرجش بره */
+}
+
+/* الطبقة الباهتة (الخلفية الخفيفة) */
+.header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* استخدام نفس الصورة كخلفية باهتة */
+  background-image: url("background2.jpg");
+  background-size: contain;
+  background-position: center;
+  /* تحكم في درجة الشفافية هنا (0.1 تعني 10% فقط) */
+  opacity: 0.12;
+  filter: blur(3px); /* إضافة تغبيش بسيط لزيادة الاحترافية */
+  z-index: 1; /* خلف اللوجو */
+}
+
+/* اللوجو الأساسي (الذي يظهر بوضوح) */
+.header-banner {
+  position: relative;
+  z-index: 2; /* فوق الطبقة الباهتة */
+  width: 90%; /* حجم اللوجو بالنسبة للهيدر */
+  max-width: 450px;
+  height: auto;
+  display: block;
+  /* إضافة ظل خفيف للوجو عشان يبرز */
+  filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.5));
+}
+.main-logo {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  border: 4px solid var(--brand-yellow);
+  background: white;
+  margin-bottom: 10px;
+}
+
+/* التابات */
+.tabs-container {
+  position: sticky;
+  top: 0;
+  background: white;
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  padding: 10px;
+  gap: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.tab-btn {
+  background: #eee;
+  border: 2px solid var(--brand-blue);
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  color: var(--brand-blue);
+  white-space: nowrap;
+}
+
+.tab-btn.active {
+  background: var(--brand-blue);
+  color: white;
+}
+
+/* الـ Container الأساسي */
+.container {
+  max-width: 800px;
+  margin: 0 auto; /* توسيط الـ container */
+  padding: 20px;
+  padding-bottom: 120px; /* مساحة عشان الفوتر ميتغطيش عليه */
+}
+
+/* شبكة المنيو */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+  margin-bottom: 50px; /* مسافة بين المنيو والفورم */
+}
+
+/* الكروت */
+.card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+.card-body {
+  padding: 10px;
+}
+.card-title {
+  font-size: 14px;
+  font-weight: bold;
+  height: 40px;
+  margin-bottom: 5px;
+}
+.price {
+  color: var(--brand-blue);
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* تحكم الكمية */
+.qty-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: #f1f1f1;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.btn-qty {
+  background: var(--brand-yellow);
+  border: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.qty-input {
+  width: 30px;
+  text-align: center;
+  border: none;
+  background: none;
+  font-weight: bold;
+}
+
+/* الفــــــــورم (إصلاح الـ Container) */
+.order-form {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  border: 2px solid var(--brand-blue);
+  margin-top: 30px;
+  width: 100%; /* تاخد عرض الـ container كله */
+}
+
+.order-form h3 {
+  text-align: center;
+  color: var(--brand-blue);
+  margin-bottom: 20px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.order-form input,
+.order-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.btn-whatsapp-main {
+  width: 100%;
+  background: #25d366;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* الفوتر */
+.footer-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--brand-dark);
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 2000;
+}
+
+.total-info span {
+  color: var(--brand-yellow);
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.btn-confirm {
+  background: var(--brand-yellow);
+  color: var(--brand-blue);
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}

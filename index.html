@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>نجمة التحرير - أبو المجد</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="header">
+      <img src="logo.jpg" alt="لوجو نجمة التحرير" class="main-logo" />
+    </header>
+
+    <!-- تابات الأقسام -->
+    <nav class="tabs-container" id="category-tabs"></nav>
+
+    <!-- الـ Container الرئيسي -->
+    <main class="container">
+      <!-- المنتجات (grid) -->
+      <div id="menu-display" class="menu-grid">
+        <!-- الأصناف بتنزل هنا من الجافاسكريبت -->
+      </div>
+
+      <!-- الفورم (جوه الـ Container) -->
+      <div class="order-form" id="checkout-section">
+        <h3>📍 بيانات التوصيل</h3>
+        <div class="input-group">
+          <input type="text" id="cust-name" placeholder="الاسم بالكامل" />
+        </div>
+        <div class="input-group">
+          <input type="tel" id="cust-phone" placeholder="رقم الموبايل" />
+        </div>
+        <div class="input-group">
+          <textarea
+            id="cust-address"
+            rows="3"
+            placeholder="العنوان بالتفصيل (المنطقة، الشارع، الدور)"
+          ></textarea>
+
+          <textarea
+            id="cust-notes"
+            rows="2"
+            placeholder="ملاحظات إضافية (مثلاً: بدون شطة، زيادة دقة، اترك الطلب عند الباب...)"
+          ></textarea>
+        </div>
+        <button class="btn-whatsapp-main" onclick="sendOrder()">
+          تأكيد وإرسال الطلب عبر واتساب ✅
+        </button>
+      </div>
+    </main>
+    <!-- نهاية الـ Container -->
+
+    <footer class="footer-bar">
+      <div class="total-info">
+        الإجمالي: <span id="grand-total">0</span> ج.م
+      </div>
+      <button
+        class="btn-confirm"
+        onclick="
+          document
+            .getElementById('checkout-section')
+            .scrollIntoView({ behavior: 'smooth' })
+        "
+      >
+        اتمام الطلب
+      </button>
+    </footer>
+
+    <script src="menu-data.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
