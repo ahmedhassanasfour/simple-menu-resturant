@@ -78,7 +78,7 @@ function sendOrder() {
 
   let itemsMsg = "";
   for (let key in cart) {
-    itemsMsg += `• ${key} (${cart[key].qty})\n`;
+    itemsMsg += `• ${key} (${cart[key].qty} * ${cart[key].price})\n`;
   }
 
   const msg = encodeURIComponent(
@@ -86,7 +86,7 @@ function sendOrder() {
       `--------------------------\n` +
       itemsMsg +
       `--------------------------\n` +
-      `💰 *الإجمالي:* ${total} ج.م\n\n` +
+      `💰 *الاجمالي بدون خدمه التوصيل:* ${total} ج.م\n\n` +
       `👤 *العميل:* ${name}\n` +
       `📞 *تلفون:* ${mobile}\n` +
       `📍 *العنوان:* ${address}`,
