@@ -67,7 +67,7 @@ function changeQty(name, price, delta, btn) {
 
 // 4. إرسال الطلب للواتساب
 function sendOrder() {
-  const phone = "201128896446"; // رقم المطعم
+  const phone = "201220886881";
   const name = document.getElementById("cust-name").value;
   const mobile = document.getElementById("cust-phone").value;
   const address = document.getElementById("cust-address").value;
