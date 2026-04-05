@@ -71,6 +71,7 @@ function sendOrder() {
   const name = document.getElementById("cust-name").value;
   const mobile = document.getElementById("cust-phone").value;
   const address = document.getElementById("cust-address").value;
+  const notes = document.getElementById("cust-notes").value; // 1. جلب قيمة الملاحظات
   const total = document.getElementById("grand-total").innerText;
 
   if (total == "0") return alert("اختار الأكل الأول!");
@@ -81,11 +82,18 @@ function sendOrder() {
     itemsMsg += `• ${key} (${cart[key].qty} * ${cart[key].price})\n`;
   }
 
+  // 2. التحقق إذا كانت الملاحظات فارغة أم لا
+  let notesMsg = "";
+  if (notes.trim() !== "") {
+    notesMsg = `📝 *ملاحظات:* ${notes}\n`;
+  }
+
   const msg = encodeURIComponent(
     `🌟 *طلب جديد من نجمة التحرير*\n` +
       `--------------------------\n` +
       itemsMsg +
       `--------------------------\n` +
+      notesMsg + // 3. إضافة الملاحظات هنا (ستكون فارغة إذا لم يكتب العميل شيئاً)
       `💰 *الاجمالي بدون خدمه التوصيل:* ${total} ج.م\n\n` +
       `👤 *العميل:* ${name}\n` +
       `📞 *تلفون:* ${mobile}\n` +
