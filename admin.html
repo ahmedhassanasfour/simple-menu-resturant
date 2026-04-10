@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>لوحة التحكم - نجمة التحرير</title>
+    <link rel="stylesheet" href="admin-style.css" />
+  </head>
+  <body>
+    <!-- 1. قسم تسجيل الدخول (يظهر لو المستخدم مش مسجل) -->
+    <div
+      id="login-section"
+      class="admin-container"
+      style="display: none; text-align: center; margin-top: 100px"
+    >
+      <h2>تسجيل دخول الإدارة 🔐</h2>
+      <div class="section" style="max-width: 400px; margin: auto">
+        <input
+          type="email"
+          id="login-email"
+          placeholder="البريد الإلكتروني"
+          style="margin-bottom: 10px; width: 90%; padding: 10px"
+        />
+        <input
+          type="password"
+          id="login-password"
+          placeholder="كلمة المرور"
+          style="margin-bottom: 10px; width: 90%; padding: 10px"
+        />
+        <button
+          style="
+            background-color: blue;
+            color: white;
+            padding: 10px 10px;
+            width: 95%;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            font-size: 24px;
+          "
+          class="btn-add"
+          onclick="login()"
+        >
+          دخول
+        </button>
+        <p id="login-error" style="color: red"></p>
+      </div>
+    </div>
+
+    <!-- 2. محتوى لوحة التحكم (مخفي حتى تسجيل الدخول) -->
+    <div id="admin-content" style="display: none">
+      <div class="admin-wrapper">
+        <aside class="sidebar">
+          <h2>نجمة التحرير</h2>
+          <nav>
+            <button
+              class="tab-link active"
+              onclick="openTab(event, 'orders-tab')"
+            >
+              📦 الطلبات
+            </button>
+            <button class="tab-link" onclick="openTab(event, 'categories-tab')">
+              📂 الأقسام (Tabs)
+            </button>
+            <button class="tab-link" onclick="openTab(event, 'items-tab')">
+              🍔 الأصناف
+            </button>
+            <hr />
+            <button class="tab-link" onclick="logout()" style="color: #ff7675">
+              تسجيل خروج 🚪
+            </button>
+          </nav>
+        </aside>
+
+        <main class="content">
+          <!-- تبويب الطلبات -->
+          <section id="orders-tab" class="tab-content active">
+            <h3>📦 طلبات العملاء الأخيرة</h3>
+            <div id="orders-list">جاري تحميل الطلبات...</div>
+          </section>
+
+          <!-- تبويب الأقسام -->
+          <section id="categories-tab" class="tab-content">
+            <h3>📂 إدارة أقسام المنيو</h3>
+            <div class="add-box">
+              <h4>إضافة قسم جديد</h4>
+              <input
+                type="text"
+                id="new-cat-id"
+                placeholder="ID القسم (مثلا: pizza)"
+              />
+              <input
+                type="text"
+                id="new-cat-title"
+                placeholder="اسم القسم (مثلا: بيتزا)"
+              />
+              <button class="btn-save" onclick="addCategory()">
+                إضافة قسم ✅
+              </button>
+            </div>
+            <div id="categories-manager"></div>
+          </section>
+
+          <!-- تبويب الأصناف -->
+          <section id="items-tab" class="tab-content">
+            <h3>🍔 إدارة الأصناف والمنتجات</h3>
+            <div class="add-box">
+              <h4>إضافة صنف جديد</h4>
+              <select id="item-category-select"></select>
+              <input type="text" id="item-name" placeholder="اسم الصنف" />
+              <input type="number" id="item-price" placeholder="السعر" />
+              <input type="file" id="item-image" accept="image/*" />
+              <button class="btn-save" onclick="addNewItem()">
+                حفظ الصنف ✅
+              </button>
+              <p id="upload-status"></p>
+            </div>
+            <div id="menu-items-manager"></div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script type="module" src="admin.js"></script>
+  </body>
+</html>

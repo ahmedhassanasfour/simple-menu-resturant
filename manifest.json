@@ -1,0 +1,21 @@
+{
+  "name": "كشري نجمة التحرير",
+  "short_name": "المنيو",
+  "description": "منيو مطعم نجمة التحرير - اطلب الآن",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#e67e22",
+  "icons": [
+    {
+      "src": "/photos/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpg"
+    },
+    {
+      "src": "/photos/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpg"
+    }
+  ]
+}

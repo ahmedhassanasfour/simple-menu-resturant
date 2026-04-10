@@ -3,38 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#e67e22" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="منيو نجمة" />
+    <link rel="apple-touch-icon" href="/photos/logo.jpg" />
     <title>نجمة التحرير - أبو المجد</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header class="header">
-      <img src="logo.jpg" alt="لوجو نجمة التحرير" class="main-logo" />
+      <img src="/photos/logo.jpg" alt="لوجو نجمة التحرير" class="main-logo" />
     </header>
 
-    <!-- تابات الأقسام -->
     <nav class="tabs-container" id="category-tabs"></nav>
 
-    <!-- الـ Container الرئيسي -->
     <main class="container">
-      <!-- المنتجات (grid) -->
-      <div id="menu-display" class="menu-grid">
-        <!-- الأصناف بتنزل هنا من الجافاسكريبت -->
-      </div>
+      <div id="menu-display" class="menu-grid"></div>
 
-      <!-- ملخص السلة الجديد -->
       <div
         id="cart-summary-container"
         class="cart-summary"
         style="display: none"
       >
         <h3>🛒 الأصناف المختارة</h3>
-        <div id="cart-items-list">
-          <!-- الأصناف المضافة ستظهر هنا -->
-        </div>
+        <div id="cart-items-list"></div>
         <hr />
       </div>
 
-      <!-- الفورم (جوه الـ Container) -->
       <div class="order-form" id="checkout-section">
         <h3>📍 بيانات التوصيل</h3>
         <div class="input-group">
@@ -47,13 +44,12 @@
           <textarea
             id="cust-address"
             rows="3"
-            placeholder="العنوان بالتفصيل (المنطقة، الشارع، الدور)"
+            placeholder="العنوان بالتفصيل"
           ></textarea>
-
           <textarea
             id="cust-notes"
             rows="2"
-            placeholder="ملاحظات إضافية (مثلاً: بدون شطة، زيادة دقة، اترك الطلب عند الباب...)"
+            placeholder="ملاحظات إضافية"
           ></textarea>
         </div>
         <button class="btn-whatsapp-main" onclick="sendOrder()">
@@ -61,11 +57,10 @@
         </button>
       </div>
     </main>
-    <!-- نهاية الـ Container -->
 
     <footer class="footer-bar">
       <div class="total-info">
-        الإجمالي بدون خدمه التوصيل: <span id="grand-total">0</span> ج.م
+        الإجمالي بدون خدمه توصيل: <span id="grand-total">0</span> ج.م
       </div>
       <button
         class="btn-confirm"
@@ -79,7 +74,56 @@
       </button>
     </footer>
 
-    <script src="menu-data.js"></script>
+    <!-- سكريبت التعامل مع السلة والواتساب -->
     <script src="script.js"></script>
+
+    <!-- سكريبت الربط بـ Firebase (للقراءة فقط للزبون) -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        addDoc,
+        enableIndexedDbPersistence,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyAuMQbkHIAz_VRPLokQvoxPoZFRighGpEI",
+        authDomain: "menu-resturant.firebaseapp.com",
+        projectId: "menu-resturant",
+        storageBucket: "menu-resturant.firebasestorage.app",
+        messagingSenderId: "33869778386",
+        appId: "1:33869778386:web:24274d7b90eb20965e0c0b",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      enableIndexedDbPersistence(db).catch((err) => {
+        console.error("فشل تفعيل الكاش المحلي", err.code);
+      });
+
+      // تعريف المتغيرات عالمياً لـ script.js
+      window.db = db;
+      window.collection = collection;
+      window.getDocs = getDocs;
+      window.addDoc = addDoc;
+
+      // تشغيل الدالة الأساسية
+      if (typeof init === "function") init();
+    </script>
+
+    <script>
+      // كود تشغيل الـ PWA
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then((reg) => console.log("PWA جاهز للعمل!", reg))
+            .catch((err) => console.log("فشل تسجيل PWA", err));
+        });
+      }
+    </script>
   </body>
 </html>

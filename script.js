@@ -1,16 +1,36 @@
 let cart = {};
+let menuData = {}; // هنملاها من Firestore
 
-function init() {
+// دالة التحميل الأساسية
+async function init() {
   const tabsContainer = document.getElementById("category-tabs");
-  let first = true;
-  for (let key in menuData) {
-    const btn = document.createElement("button");
-    btn.className = `tab-btn ${first ? "active" : ""}`;
-    btn.innerText = menuData[key].title;
-    btn.onclick = (e) => renderMenu(key, e.target);
-    tabsContainer.appendChild(btn);
-    if (first) renderMenu(key, btn);
-    first = false;
+  tabsContainer.innerHTML = "جاري تحميل القائمة...";
+
+  try {
+    // جلب البيانات من كولكشن اسمه "menu" في Firestore
+    const querySnapshot = await window.getDocs(
+      window.collection(window.db, "menu"),
+    );
+
+    // تحويل البيانات لشكل يفهمه الكود بتاعك
+    querySnapshot.forEach((doc) => {
+      menuData[doc.id] = doc.data();
+    });
+
+    tabsContainer.innerHTML = "";
+    let first = true;
+    for (let key in menuData) {
+      const btn = document.createElement("button");
+      btn.className = `tab-btn ${first ? "active" : ""}`;
+      btn.innerText = menuData[key].title;
+      btn.onclick = (e) => renderMenu(key, e.target);
+      tabsContainer.appendChild(btn);
+      if (first) renderMenu(key, btn);
+      first = false;
+    }
+  } catch (error) {
+    console.error("خطأ في جلب البيانات: ", error);
+    tabsContainer.innerHTML = "فشل تحميل المنيو. تأكد من إعدادات Firestore.";
   }
 }
 
@@ -38,53 +58,35 @@ function renderMenu(categoryId, btn) {
                         <button class="btn-qty" onclick="changeQty('${item.name}', ${item.price}, 1)">+</button>
                     </div>
                 </div>
-            </div>
-        `;
+            </div>`;
     display.innerHTML += card;
   });
 }
 
-// تحديث الكمية (معدلة لتعمل مع السلة والقائمة معاً)
 function changeQty(name, price, delta) {
-  if (!cart[name]) {
-    cart[name] = { qty: 0, price: price };
-  }
-
+  if (!cart[name]) cart[name] = { qty: 0, price: price };
   cart[name].qty += delta;
-
-  if (cart[name].qty <= 0) {
-    delete cart[name];
-  }
-
+  if (cart[name].qty <= 0) delete cart[name];
   updateUI();
 }
 
-// حذف صنف بالكامل
 function removeItem(name) {
   delete cart[name];
   updateUI();
 }
 
-// تحديث واجهة المستخدم بالكامل
 function updateUI() {
   let total = 0;
   const cartList = document.getElementById("cart-items-list");
   const cartContainer = document.getElementById("cart-summary-container");
 
   cartList.innerHTML = "";
-
   const keys = Object.keys(cart);
-  if (keys.length > 0) {
-    cartContainer.style.display = "block";
-  } else {
-    cartContainer.style.display = "none";
-  }
+  cartContainer.style.display = keys.length > 0 ? "block" : "none";
 
   keys.forEach((name) => {
     const item = cart[name];
     total += item.qty * item.price;
-
-    // إضافة الصنف لشاشة الملخص
     cartList.innerHTML += `
         <div class="cart-item">
             <span class="item-name">${name}</span>
@@ -95,15 +97,11 @@ function updateUI() {
             </div>
             <span class="item-subtotal">${item.qty * item.price} ج.م</span>
             <button class="btn-del" onclick="removeItem('${name}')">🗑️</button>
-        </div>
-    `;
-
-    // تحديث الرقم في القائمة (Menu) إذا كان الصنف معروضاً حالياً
+        </div>`;
     const menuInput = document.getElementById(`qty-${name}`);
     if (menuInput) menuInput.value = item.qty;
   });
 
-  // تصفير الخانات في المنيو للأصناف المحذوفة
   document.querySelectorAll(".qty-input").forEach((input) => {
     const itemName = input.id.replace("qty-", "");
     if (!cart[itemName]) input.value = 0;
@@ -112,7 +110,8 @@ function updateUI() {
   document.getElementById("grand-total").innerText = total;
 }
 
-function sendOrder() {
+// تعديل دالة الإرسال لحفظ الطلب في Firebase
+async function sendOrder() {
   const phone = "201220886881";
   const name = document.getElementById("cust-name").value;
   const mobile = document.getElementById("cust-phone").value;
@@ -123,26 +122,43 @@ function sendOrder() {
   if (total == "0") return alert("اختار الأكل الأول!");
   if (!name || !mobile || !address) return alert("البيانات ناقصة!");
 
-  let itemsMsg = "";
-  for (let key in cart) {
-    itemsMsg += `• ${key} (${cart[key].qty} * ${cart[key].price})\n`;
+  // 1. تجهيز بيانات الطلب لـ Firebase
+  const orderData = {
+    customerName: name,
+    customerPhone: mobile,
+    customerAddress: address,
+    notes: notes,
+    totalPrice: total,
+    orderDate: new Date().toLocaleString("ar-EG"),
+    items: cart,
+  };
+
+  try {
+    // 2. حفظ في كولكشن "orders"
+    await window.addDoc(window.collection(window.db, "orders"), orderData);
+
+    // 3. إرسال الواتساب
+    let itemsMsg = "";
+    for (let key in cart) {
+      itemsMsg += `• ${key} (${cart[key].qty} * ${cart[key].price})\n`;
+    }
+    let notesMsg = notes.trim() !== "" ? `📝 *ملاحظات:* ${notes}\n` : "";
+    const msg = encodeURIComponent(
+      `🌟 *طلب جديد من نجمة التحرير*\n` +
+        `--------------------------\n` +
+        itemsMsg +
+        `--------------------------\n` +
+        notesMsg +
+        `💰 *الاجمالي:* ${total} ج.م\n\n` +
+        `👤 *العميل:* ${name}\n` +
+        `📞 *تلفون:* ${mobile}\n` +
+        `📍 *العنوان:* ${address}`,
+    );
+    window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
+  } catch (e) {
+    console.error("خطأ في حفظ الطلب: ", e);
+    alert("حدث خطأ، برجاء المحاولة مرة أخرى.");
   }
-
-  let notesMsg = notes.trim() !== "" ? `📝 *ملاحظات:* ${notes}\n` : "";
-
-  const msg = encodeURIComponent(
-    `🌟 *طلب جديد من نجمة التحرير*\n` +
-      `--------------------------\n` +
-      itemsMsg +
-      `--------------------------\n` +
-      notesMsg +
-      `💰 *الاجمالي بدون خدمه التوصيل:* ${total} ج.م\n\n` +
-      `👤 *العميل:* ${name}\n` +
-      `📞 *تلفون:* ${mobile}\n` +
-      `📍 *العنوان:* ${address}`,
-  );
-
-  window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
 }
 
 window.onload = init;
